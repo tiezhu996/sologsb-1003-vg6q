@@ -3,6 +3,13 @@ export type SegmentStatus = 'draft' | 'needs-work' | 'confirmed' | 'returned'
 export type IssueType = 'missing-translation' | 'missing-variable' | 'link-mismatch' | 'glossary' | 'code-format'
 export type IssueSeverity = 'error' | 'warning'
 
+export interface MemoryAdoption {
+  memoryId: string
+  /** 采用那一刻的片段源文，用于之后判断源文是否改动。 */
+  sourceAtAdoption: string
+  appliedAt: number
+}
+
 export interface Segment {
   id: string
   index: number
@@ -12,6 +19,7 @@ export interface Segment {
   status: SegmentStatus
   protectedTokens: string[]
   note: string
+  adoptedMemories?: MemoryAdoption[]
 }
 
 export interface GlossaryTerm {
@@ -40,13 +48,35 @@ export interface TranslationIssue {
   expected?: string
 }
 
+export interface TranslationMemoryEntry {
+  id: string
+  sourceText: string
+  targetText: string
+  sourceLanguage: string
+  targetLanguage: string
+  enabled: boolean
+  useCount: number
+  createdAt: number
+  updatedAt: number
+}
+
+export interface MemoryMatch {
+  entry: TranslationMemoryEntry
+  /** 0–1 的综合相似度。 */
+  score: number
+  band: 'high' | 'medium' | 'low'
+  keywords: string[]
+}
+
 export interface HistoryEntry {
   id: string
   segmentId: string
   author: string
-  action: 'edit' | 'confirm' | 'return' | 'resolve-conflict' | 'import' | 'discussion'
+  action: 'edit' | 'confirm' | 'return' | 'resolve-conflict' | 'import' | 'discussion' | 'memory-apply'
   before: string
   after: string
+  /** action 为 memory-apply 时，记录译文取自哪条记忆。 */
+  memoryId?: string
   createdAt: number
 }
 

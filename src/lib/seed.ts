@@ -1,4 +1,4 @@
-import type { Discussion, GlossaryTerm, HistoryEntry, LocalizationDocument, Segment, TranslationConflict } from './types'
+import type { Discussion, GlossaryTerm, HistoryEntry, LocalizationDocument, Segment, TranslationConflict, TranslationMemoryEntry } from './types'
 
 export const seedSegments: Segment[] = [
   { id: 'seg-01', index: 1, kind: 'heading', sourceText: '# Deployment Guide', targetText: '# 部署指南', status: 'confirmed', protectedTokens: [], note: '保留 Markdown 标题层级。' },
@@ -11,6 +11,16 @@ export const seedSegments: Segment[] = [
   { id: 'seg-08', index: 8, kind: 'paragraph', sourceText: 'If the controller cannot reach the API server, check the network policy and then restart the pod.', targetText: '如果控制器无法连接 API 服务器，请检查网络策略，然后重启 Pod。', status: 'draft', protectedTokens: [], note: '' },
   { id: 'seg-09', index: 9, kind: 'link', sourceText: 'See [Troubleshooting](https://docs.example.com/troubleshooting#connectivity) for detailed diagnostics.', targetText: '详细诊断请参阅 [故障排查](https://docs.example.com/troubleshooting)。', status: 'returned', protectedTokens: ['https://docs.example.com/troubleshooting#connectivity'], note: '锚点链接丢失，需要修复。' },
   { id: 'seg-10', index: 10, kind: 'heading', sourceText: '## Upgrade Notes', targetText: '', status: 'draft', protectedTokens: [], note: '漏译示例。' },
+  {
+    id: 'seg-11', index: 11, kind: 'paragraph',
+    sourceText: 'The operator now validates admission webhooks before applying changes to the cluster.',
+    targetText: 'Operator 现在会在应用变更前校验准入 webhook。',
+    status: 'draft', protectedTokens: [],
+    note: '源文已更新（补充了 webhook 校验），此前采用的记忆译文与当前源文对不上。',
+    adoptedMemories: [
+      { memoryId: 'mem-10', sourceAtAdoption: 'The operator validates changes before applying them to the cluster.', appliedAt: Date.now() - 5400000 },
+    ],
+  },
 ]
 
 export const seedGlossary: GlossaryTerm[] = [
@@ -30,6 +40,21 @@ export const seedHistory: HistoryEntry[] = [
   { id: 'h-01', segmentId: 'seg-05', author: '译者 · 李然', action: 'edit', before: '', after: '安装 operator 时需要集群管理员权限。生产环境建议使用专用的服务账号。', createdAt: Date.now() - 5200000 },
   { id: 'h-02', segmentId: 'seg-09', author: '译者 · 李然', action: 'edit', before: '', after: '详细诊断请参阅 [故障排查](https://docs.example.com/troubleshooting)。', createdAt: Date.now() - 4000000 },
   { id: 'h-03', segmentId: 'seg-01', author: '审校 · Maya', action: 'confirm', before: '# 部署指南', after: '# 部署指南', createdAt: Date.now() - 3200000 },
+  { id: 'h-04', segmentId: 'seg-11', author: '译者 · 李然', action: 'memory-apply', memoryId: 'mem-10', before: '', after: 'Operator 会在将变更应用到集群前进行校验。', createdAt: Date.now() - 5400000 },
+  { id: 'h-05', segmentId: 'seg-11', author: '译者 · 李然', action: 'edit', before: 'Operator 会在将变更应用到集群前进行校验。', after: 'Operator 现在会在应用变更前校验准入 webhook。', createdAt: Date.now() - 5000000 },
+]
+
+export const seedMemory: TranslationMemoryEntry[] = [
+  { id: 'mem-01', sourceText: 'The operator requires cluster-admin privileges during installation.', targetText: '安装 Operator 时需要集群管理员权限。', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: true, useCount: 3, createdAt: Date.now() - 86400000 * 6, updatedAt: Date.now() - 86400000 * 2 },
+  { id: 'mem-02', sourceText: 'This guide explains how to deploy the operator to a Kubernetes cluster.', targetText: '本指南介绍如何将 Operator 部署到 Kubernetes 集群。', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: true, useCount: 5, createdAt: Date.now() - 86400000 * 9, updatedAt: Date.now() - 86400000 * 3 },
+  { id: 'mem-03', sourceText: '## Upgrade Notes', targetText: '## 升级说明', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: true, useCount: 1, createdAt: Date.now() - 86400000 * 4, updatedAt: Date.now() - 86400000 * 4 },
+  { id: 'mem-04', sourceText: 'Production environments should use a dedicated service account.', targetText: '生产环境应使用专用服务账号。', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: true, useCount: 2, createdAt: Date.now() - 86400000 * 7, updatedAt: Date.now() - 86400000 * 1 },
+  { id: 'mem-05', sourceText: 'Before you begin, review the configuration reference.', targetText: '开始前，请阅读配置参考。', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: true, useCount: 4, createdAt: Date.now() - 86400000 * 11, updatedAt: Date.now() - 86400000 * 5 },
+  { id: 'mem-06', sourceText: 'Run helm upgrade --install to apply the new chart version.', targetText: '运行 helm upgrade --install 应用新的 chart 版本。', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: true, useCount: 2, createdAt: Date.now() - 86400000 * 8, updatedAt: Date.now() - 86400000 * 2 },
+  { id: 'mem-07', sourceText: 'Restart the pod to pick up the new configuration.', targetText: '重新启动 Pod 以加载新配置。', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: false, useCount: 1, createdAt: Date.now() - 86400000 * 12, updatedAt: Date.now() - 86400000 * 6 },
+  { id: 'mem-08', sourceText: 'The quick brown fox jumps over the lazy dog.', targetText: '敏捷的棕色狐狸跳过懒狗。', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: true, useCount: 0, createdAt: Date.now() - 86400000 * 20, updatedAt: Date.now() - 86400000 * 20 },
+  { id: 'mem-09', sourceText: 'The operator validates admission webhooks before applying changes.', targetText: 'Operator 会在应用变更前校验准入 webhook。', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: true, useCount: 1, createdAt: Date.now() - 86400000 * 3, updatedAt: Date.now() - 86400000 * 1 },
+  { id: 'mem-10', sourceText: 'The operator validates changes before applying them to the cluster.', targetText: 'Operator 会在将变更应用到集群前进行校验。', sourceLanguage: 'English', targetLanguage: '简体中文', enabled: true, useCount: 2, createdAt: Date.now() - 86400000 * 10, updatedAt: Date.now() - 86400000 * 2 },
 ]
 
 export const seedConflicts: TranslationConflict[] = [
