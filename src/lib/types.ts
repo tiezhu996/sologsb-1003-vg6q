@@ -12,6 +12,7 @@ export interface Segment {
   status: SegmentStatus
   protectedTokens: string[]
   note: string
+  memoryAdoption?: MemoryAdoption | null
 }
 
 export interface GlossaryTerm {
@@ -20,6 +21,24 @@ export interface GlossaryTerm {
   target: string
   caseSensitive: boolean
   note: string
+}
+
+/** 共享句对记忆库中的一条旧译文 */
+export interface MemoryEntry {
+  id: string
+  sourceText: string
+  targetText: string
+  disabled: boolean
+  source?: string
+  createdAt: number
+}
+
+/** 片段采用记忆库条目的记录，sourceSnapshot 用于检测源文改动后是否对不上 */
+export interface MemoryAdoption {
+  memoryId: string
+  sourceSnapshot: string
+  targetApplied: string
+  adoptedAt: number
 }
 
 export interface Discussion {
@@ -44,10 +63,13 @@ export interface HistoryEntry {
   id: string
   segmentId: string
   author: string
-  action: 'edit' | 'confirm' | 'return' | 'resolve-conflict' | 'import' | 'discussion'
+  action: 'edit' | 'confirm' | 'return' | 'resolve-conflict' | 'import' | 'discussion' | 'memory-apply'
   before: string
   after: string
   createdAt: number
+  /** memory-apply 时写明取自哪条记忆 */
+  memoryId?: string
+  memorySource?: string
 }
 
 export interface TranslationConflict {

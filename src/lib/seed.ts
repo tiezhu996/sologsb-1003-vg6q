@@ -1,14 +1,14 @@
-import type { Discussion, GlossaryTerm, HistoryEntry, LocalizationDocument, Segment, TranslationConflict } from './types'
+import type { Discussion, GlossaryTerm, HistoryEntry, LocalizationDocument, MemoryEntry, Segment, TranslationConflict } from './types'
 
 export const seedSegments: Segment[] = [
   { id: 'seg-01', index: 1, kind: 'heading', sourceText: '# Deployment Guide', targetText: '# 部署指南', status: 'confirmed', protectedTokens: [], note: '保留 Markdown 标题层级。' },
-  { id: 'seg-02', index: 2, kind: 'paragraph', sourceText: 'This guide explains how to deploy {{project_name}} version {{version}} to a Kubernetes cluster.', targetText: '本指南介绍如何将 {{project_name}} {{version}} 版部署到 Kubernetes 集群。', status: 'draft', protectedTokens: ['{{project_name}}', '{{version}}'], note: '项目名和版本号保留占位符。' },
+  { id: 'seg-02', index: 2, kind: 'paragraph', sourceText: 'This guide explains how to deploy {{project_name}} version {{version}} to a Kubernetes cluster.', targetText: '本指南介绍如何将 {{project_name}} {{version}} 版部署到 Kubernetes 集群。', status: 'draft', protectedTokens: ['{{project_name}}', '{{version}}'], note: '项目名和版本号保留占位符。', memoryAdoption: { memoryId: 'mem-02', sourceSnapshot: 'This guide explains how to deploy {{project_name}} version {{version}} to a Kubernetes cluster.', targetApplied: '本指南介绍如何将 {{project_name}} {{version}} 版部署到 Kubernetes 集群。', adoptedAt: Date.now() - 3600000 } },
   { id: 'seg-03', index: 3, kind: 'heading', sourceText: '## Prerequisites', targetText: '## 前置条件', status: 'confirmed', protectedTokens: [], note: '' },
   { id: 'seg-04', index: 4, kind: 'link', sourceText: 'Before you begin, review the [configuration reference](https://docs.example.com/config) and install `kubectl`.', targetText: '开始前，请阅读 [配置参考](https://docs.example.com/config)，并安装 `kubectl`。', status: 'draft', protectedTokens: ['https://docs.example.com/config'], note: '' },
   { id: 'seg-05', index: 5, kind: 'paragraph', sourceText: 'The operator requires cluster-admin privileges during installation. Production environments should use a dedicated service account.', targetText: '安装 operator 时需要集群管理员权限。生产环境建议使用专用的服务账号。', status: 'needs-work', protectedTokens: [], note: 'operator 的术语待 unified。' },
   { id: 'seg-06', index: 6, kind: 'code', sourceText: '```bash\nhelm upgrade --install {{release_name}} oci://registry.example.com/operator --version {{version}}\n```', targetText: '```bash\nhelm upgrade --install {{release_name}} oci://registry.example.com/operator --version {{version}}\n```', status: 'confirmed', protectedTokens: ['{{release_name}}', '{{version}}'], note: '命令保持原样。' },
   { id: 'seg-07', index: 7, kind: 'variable', sourceText: 'Set `replicaCount` to `{replica_count}` in your values file.', targetText: '在 values 文件中将 `replicaCount` 设置为 `{replica_count}`。', status: 'draft', protectedTokens: ['{replica_count}'], note: '' },
-  { id: 'seg-08', index: 8, kind: 'paragraph', sourceText: 'If the controller cannot reach the API server, check the network policy and then restart the pod.', targetText: '如果控制器无法连接 API 服务器，请检查网络策略，然后重启 Pod。', status: 'draft', protectedTokens: [], note: '' },
+  { id: 'seg-08', index: 8, kind: 'paragraph', sourceText: 'If the controller cannot reach the API server, check the network policy and then restart the pod.', targetText: '如果控制器无法连接 API 服务器，请检查网络策略，然后重启 Pod。', status: 'draft', protectedTokens: [], note: '', memoryAdoption: { memoryId: 'mem-03', sourceSnapshot: 'If the controller cannot reach the API server, verify the network policy and restart the pod.', targetApplied: '如果控制器无法连接 API 服务器，请检查网络策略，然后重启 Pod。', adoptedAt: Date.now() - 7200000 } },
   { id: 'seg-09', index: 9, kind: 'link', sourceText: 'See [Troubleshooting](https://docs.example.com/troubleshooting#connectivity) for detailed diagnostics.', targetText: '详细诊断请参阅 [故障排查](https://docs.example.com/troubleshooting)。', status: 'returned', protectedTokens: ['https://docs.example.com/troubleshooting#connectivity'], note: '锚点链接丢失，需要修复。' },
   { id: 'seg-10', index: 10, kind: 'heading', sourceText: '## Upgrade Notes', targetText: '', status: 'draft', protectedTokens: [], note: '漏译示例。' },
 ]
@@ -30,11 +30,27 @@ export const seedHistory: HistoryEntry[] = [
   { id: 'h-01', segmentId: 'seg-05', author: '译者 · 李然', action: 'edit', before: '', after: '安装 operator 时需要集群管理员权限。生产环境建议使用专用的服务账号。', createdAt: Date.now() - 5200000 },
   { id: 'h-02', segmentId: 'seg-09', author: '译者 · 李然', action: 'edit', before: '', after: '详细诊断请参阅 [故障排查](https://docs.example.com/troubleshooting)。', createdAt: Date.now() - 4000000 },
   { id: 'h-03', segmentId: 'seg-01', author: '审校 · Maya', action: 'confirm', before: '# 部署指南', after: '# 部署指南', createdAt: Date.now() - 3200000 },
+  { id: 'h-04', segmentId: 'seg-02', author: '译者 · 李然', action: 'memory-apply', before: '', after: '本指南介绍如何将 {{project_name}} {{version}} 版部署到 Kubernetes 集群。', createdAt: Date.now() - 3600000, memoryId: 'mem-02', memorySource: '上一版部署指南' },
+  { id: 'h-05', segmentId: 'seg-08', author: '译者 · 李然', action: 'memory-apply', before: '', after: '如果控制器无法连接 API 服务器，请检查网络策略，然后重启 Pod。', createdAt: Date.now() - 7200000, memoryId: 'mem-03', memorySource: '运维 Runbook · 网络章节' },
 ]
 
 export const seedConflicts: TranslationConflict[] = [
   { id: 'cf-01', segmentId: 'seg-05', localText: '安装 operator 时需要集群管理员权限。生产环境建议使用专用的服务账号。', remoteText: '安装 Operator 时需要集群管理员权限。生产环境应使用专用服务账号。', remoteAuthor: '远端协作者 · Alex', createdAt: Date.now() - 1200000 },
   { id: 'cf-02', segmentId: 'seg-09', localText: '详细诊断请参阅 [故障排查](https://docs.example.com/troubleshooting)。', remoteText: '详细诊断请参阅 [故障排查](https://docs.example.com/troubleshooting#connectivity)。', remoteAuthor: 'MSW 模拟审校者', createdAt: Date.now() - 900000 },
+]
+
+/** 共享句对记忆库：历史译文，按源文相似度为当前片段提供可复用建议 */
+export const seedMemoryEntries: MemoryEntry[] = [
+  { id: 'mem-01', sourceText: 'The operator requires administrator privileges to install the service into the cluster.', targetText: '将服务安装到集群时，Operator 需要管理员权限。', disabled: false, source: '旧版安装手册 · 第 2 章', createdAt: Date.now() - 86400000 * 21 },
+  { id: 'mem-02', sourceText: 'This guide explains how to deploy {{project_name}} version {{version}} to a Kubernetes cluster.', targetText: '本指南介绍如何将 {{project_name}} {{version}} 版部署到 Kubernetes 集群。', disabled: false, source: '上一版部署指南', createdAt: Date.now() - 86400000 * 18 },
+  { id: 'mem-03', sourceText: 'If the controller cannot reach the API server, verify the network policy and restart the pod.', targetText: '如果控制器无法连接 API 服务器，请检查网络策略，然后重启 Pod。', disabled: false, source: '运维 Runbook · 网络章节', createdAt: Date.now() - 86400000 * 16 },
+  { id: 'mem-04', sourceText: 'Before you begin, review the configuration reference and install the Kubernetes command line tool.', targetText: '开始前，请阅读配置参考，并安装 Kubernetes 命令行工具。', disabled: false, source: '旧版前置条件页', createdAt: Date.now() - 86400000 * 12 },
+  { id: 'mem-05', sourceText: 'See the troubleshooting guide for detailed diagnostics and connectivity checks.', targetText: '详细诊断与连接检查请参阅故障排查指南。', disabled: false, source: '支持知识库 KB-2048', createdAt: Date.now() - 86400000 * 9 },
+  { id: 'mem-06', sourceText: 'Set the replica count value in the values file of your deployment.', targetText: '在部署的 values 文件中设置副本数量。', disabled: false, source: 'Helm 示例仓库', createdAt: Date.now() - 86400000 * 7 },
+  { id: 'mem-07', sourceText: 'The operator requires privileged access during installation and a dedicated service account in production.', targetText: '安装期间 Operator 需要特权访问，生产环境应使用专用的服务账号。', disabled: false, source: '安全基线文档 v3', createdAt: Date.now() - 86400000 * 5 },
+  { id: 'mem-08', sourceText: 'Run the helm upgrade command with the release name and the target version of the chart.', targetText: '使用发行名称和 chart 的目标版本运行 helm upgrade 命令。', disabled: false, source: 'CI 流水线模板', createdAt: Date.now() - 86400000 * 3 },
+  { id: 'mem-09', sourceText: 'The dashboard requires a browser plugin to render custom metrics panels.', targetText: '仪表板需要浏览器插件才能渲染自定义指标面板。', disabled: true, source: '已废弃的前端指南', createdAt: Date.now() - 86400000 * 2 },
+  { id: 'mem-10', sourceText: 'Quarterly billing invoices are generated on the first business day of each month.', targetText: '季度账单发票在每月的第一个工作日生成。', disabled: false, source: '计费平台文案', createdAt: Date.now() - 86400000 },
 ]
 
 export const seedDocument: LocalizationDocument = {

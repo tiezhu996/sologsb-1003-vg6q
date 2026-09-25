@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import { analyzeDocument } from '@/lib/markdown'
 import { seedConflicts, seedDocument, seedHistory } from '@/lib/seed'
-import type { GlossaryTerm, Segment } from '@/lib/types'
+import type { GlossaryTerm, MemoryEntry, Segment } from '@/lib/types'
 
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
@@ -15,9 +15,9 @@ export const handlers = [
     return HttpResponse.json({ checkedAt: Date.now(), issues: analyzeDocument(body.segments, body.glossary) })
   }),
   http.post('/api/draft', async ({ request }) => {
-    const body = await request.json() as { documentId: string; segments: Segment[]; discussions: unknown[] }
+    const body = await request.json() as { documentId: string; segments: Segment[]; discussions: unknown[]; memoryEntries?: MemoryEntry[] }
     await new Promise((resolve) => setTimeout(resolve, 240))
-    return HttpResponse.json({ saved: true, documentId: body.documentId, segmentCount: body.segments.length, savedAt: Date.now() })
+    return HttpResponse.json({ saved: true, documentId: body.documentId, segmentCount: body.segments.length, memoryCount: body.memoryEntries?.length ?? 0, savedAt: Date.now() })
   }),
   http.post('/api/review', async ({ request }) => {
     const body = await request.json() as { action: string; segmentIds: string[]; reason?: string }
